@@ -42,6 +42,7 @@ export default defineConfig({
     }
   },
   server: {
+    host: true,   // écoute sur le réseau local, pas juste localhost — nécessaire pour un accès depuis d'autres appareils sur le même wifi
     port: 5173,
     proxy: {
       '/api': 'http://localhost:3000',
