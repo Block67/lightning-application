@@ -212,6 +212,8 @@ worthIt = true  si frais_heure <= 5 sat/vB
 
 Il faut se connecter (LNURL-auth ou WebLN) pour publier un message ; tout le monde voit le fil en direct (poll toutes les 2s). Chaque post affiche la pubkey (tronquée) de l'auteur — pseudonyme, pas anonyme, voir [LAPP-GUIDE.md § 4.7](LAPP-GUIDE.md#47-pseudonymat-pas-anonymat). CRUD REST classique (`GET`/`POST`/`DELETE`, codes 200/201/204/403/404) — voir détail des routes dans `server/src/posts.js`. Chaque auteur peut supprimer ses propres posts.
 
+**Persistance :** stocké dans `server/data.sqlite` (via le module natif `node:sqlite`, aucune dépendance ajoutée) — survit aux redémarrages du serveur, contrairement aux challenges LNURL-auth et aux scores du jeu, volontairement éphémères en mémoire. Le fichier est ignoré par git (`.gitignore`).
+
 ---
 
 ## Feature 3 — Jeu d'équipe
@@ -274,7 +276,7 @@ Une fois connecté, le badge pubkey dans la nav (desktop) devient un menu dérou
 | xpub / zpub | IndexedDB table `settings` | Permanent |
 | Frais / prix | Mémoire (Pinia) | Session uniquement |
 | UTXOs | Mémoire (Pinia) | Session uniquement |
-| Posts du blog | Mémoire (serveur) | Jusqu'au redémarrage serveur |
+| Posts du blog | SQLite (`server/data.sqlite`) | Permanent |
 | Scores du jeu | Mémoire (serveur) | Jusqu'au redémarrage serveur / `POST /game/reset` |
 
 ---
@@ -316,6 +318,7 @@ Une fois connecté, le badge pubkey dans la nav (desktop) devient un menu dérou
 | Auth Lightning | lnurl (LNURL-auth) + jsonwebtoken |
 | Paiement Lightning | WebLN (`window.webln`, ex: extension Alby) |
 | Serveur | Express.js |
+| DB serveur (blog) | `node:sqlite` (natif Node ≥ 22.5, expérimental) |
 | Dev | Vite + concurrently |
 
 ---
