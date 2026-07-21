@@ -30,6 +30,19 @@ export const usePostsStore = defineStore('posts', () => {
     return data.post
   }
 
+  async function deletePost(id) {
+    const auth = useAuthStore()
+    const res = await fetch(`${SERVER}/posts/${id}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.error || 'Erreur serveur')
+    }
+    await fetchPosts()
+  }
+
   function startPolling() {
     fetchPosts()
     timer = setInterval(fetchPosts, 2000)
@@ -39,5 +52,5 @@ export const usePostsStore = defineStore('posts', () => {
     clearInterval(timer)
   }
 
-  return { posts, fetchPosts, publish, startPolling, stopPolling }
+  return { posts, fetchPosts, publish, deletePost, startPolling, stopPolling }
 })

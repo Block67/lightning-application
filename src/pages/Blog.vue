@@ -45,6 +45,12 @@
           <span class="post-pubkey">⚡ {{ short(post.pubkey) }}</span>
           <p class="post-msg">{{ post.message }}</p>
           <span class="post-time">{{ timeAgo(post.createdAt) }}</span>
+          <button
+            v-if="auth.pubkey === post.pubkey"
+            class="post-delete"
+            :title="t('blog.delete')"
+            @click="remove(post.id)"
+          >🗑️</button>
         </div>
       </div>
     </div>
@@ -81,6 +87,14 @@ function timeAgo(ts) {
   if (sec < 60) return `${sec}s`
   if (sec < 3600) return `${Math.floor(sec / 60)}min`
   return `${Math.floor(sec / 3600)}h`
+}
+
+async function remove(id) {
+  try {
+    await posts.deletePost(id)
+  } catch (e) {
+    publishError.value = e.message
+  }
 }
 
 function openAuth() {
@@ -149,4 +163,15 @@ textarea:focus { outline: none; box-shadow: var(--shadow-sm); }
 .post-pubkey { font-family: monospace; font-size: 11px; font-weight: 700; color: var(--muted); }
 .post-msg { flex: 1 1 100%; font-size: 14px; font-weight: 600; word-break: break-word; }
 .post-time { font-size: 11px; color: var(--muted); font-weight: 600; margin-left: auto; }
+
+.post-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 4px;
+  opacity: 0.6;
+  transition: opacity 0.08s;
+}
+.post-delete:hover { opacity: 1; }
 </style>

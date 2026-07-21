@@ -16,7 +16,8 @@
     "publish": "Publish",
     "needAuth": "Connect with your Lightning wallet to publish.",
     "feed": "Live feed",
-    "empty": "No messages yet. Be the first!"
+    "empty": "No messages yet. Be the first!",
+    "delete": "Delete"
   },
   "game": {
     "title": "Team Game",
