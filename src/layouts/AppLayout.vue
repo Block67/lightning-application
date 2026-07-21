@@ -9,6 +9,7 @@
 
       <nav class="nav-links">
         <RouterLink to="/fees">⚡ {{ t('nav.fees') }}</RouterLink>
+        <RouterLink to="/game">🎮 {{ t('nav.game') }}</RouterLink>
         <RouterLink to="/utxos"     v-if="auth.isAuthenticated">🔗 {{ t('nav.utxos') }}</RouterLink>
         <RouterLink to="/stack"     v-if="auth.isAuthenticated">📈 {{ t('nav.stack') }}</RouterLink>
         <RouterLink to="/dashboard" v-if="auth.isAuthenticated">🏠 {{ t('nav.dashboard') }}</RouterLink>
@@ -43,6 +44,7 @@
     <!-- Mobile nav -->
     <div class="mobile-nav" :class="{ open: mobileOpen }">
       <RouterLink to="/fees"      @click="mobileOpen = false">⚡ {{ t('nav.fees') }}</RouterLink>
+      <RouterLink to="/game"      @click="mobileOpen = false">🎮 {{ t('nav.game') }}</RouterLink>
       <RouterLink to="/utxos"     @click="mobileOpen = false" v-if="auth.isAuthenticated">🔗 {{ t('nav.utxos') }}</RouterLink>
       <RouterLink to="/stack"     @click="mobileOpen = false" v-if="auth.isAuthenticated">📈 {{ t('nav.stack') }}</RouterLink>
       <RouterLink to="/dashboard" @click="mobileOpen = false" v-if="auth.isAuthenticated">🏠 {{ t('nav.dashboard') }}</RouterLink>

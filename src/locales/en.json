@@ -5,7 +5,20 @@
     "stack": "Stack",
     "dashboard": "Dashboard",
     "connect": "Connect with Lightning",
-    "disconnect": "Disconnect"
+    "disconnect": "Disconnect",
+    "game": "Team Game"
+  },
+  "game": {
+    "title": "Team Game",
+    "sub": "Connect with Lightning and score a point for your team. One point per person — the goal is to practice a real LNURL-auth connection!",
+    "step1": "Pick your team",
+    "step2": "Connect and score your point",
+    "needAuth": "Connect with your Lightning wallet to score your point.",
+    "pickFirst": "Pick a team above first.",
+    "scoreBtn": "Score a point",
+    "scored": "Point scored for",
+    "leaderboard": "Live leaderboard",
+    "connected": "connected"
   },
   "tip": {
     "cta": "Tip",

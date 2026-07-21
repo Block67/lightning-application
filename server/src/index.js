@@ -4,6 +4,7 @@ const cors = require('cors')
 const jwt = require('jsonwebtoken')
 const { setupAuth } = require('./auth')
 const { getXpubUtxos } = require('./utxo')
+const { setupGame } = require('./game')
 
 const app = express()
 
@@ -17,7 +18,7 @@ function requireAuth(req, res, next) {
   const auth = req.headers.authorization
   if (!auth?.startsWith('Bearer ')) return res.status(401).json({ error: 'Non autorisé' })
   try {
-    jwt.verify(auth.slice(7), process.env.JWT_SECRET)
+    req.auth = jwt.verify(auth.slice(7), process.env.JWT_SECRET)
     next()
   } catch {
     res.status(401).json({ error: 'Token invalide ou expiré' })
@@ -25,6 +26,7 @@ function requireAuth(req, res, next) {
 }
 
 setupAuth(app)
+setupGame(app, requireAuth)
 
 // UTXO — dérivation xpub/ypub/zpub + agrégation via mempool.space par adresse
 app.get('/api/utxos/:xpub', requireAuth, async (req, res) => {
