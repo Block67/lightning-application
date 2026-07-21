@@ -6,7 +6,17 @@
     "dashboard": "Dashboard",
     "connect": "Connexion Lightning",
     "disconnect": "Déconnecter",
-    "game": "Jeu d'équipe"
+    "game": "Jeu d'équipe",
+    "blog": "Blog"
+  },
+  "blog": {
+    "title": "Blog",
+    "sub": "Connecte-toi avec Lightning pour publier — tout le monde voit le fil en direct.",
+    "placeholder": "Écris quelque chose…",
+    "publish": "Publier",
+    "needAuth": "Connecte-toi avec ton wallet Lightning pour publier.",
+    "feed": "Fil en direct",
+    "empty": "Aucun message pour l'instant. Sois le premier !"
   },
   "game": {
     "title": "Jeu d'équipe",

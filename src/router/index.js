@@ -5,6 +5,7 @@ const routes = [
   { path: '/',         component: () => import('@/pages/Landing.vue')   },
   { path: '/fees',     component: () => import('@/pages/Fees.vue')      },
   { path: '/game',     component: () => import('@/pages/Game.vue')      },
+  { path: '/blog',     component: () => import('@/pages/Blog.vue')      },
   { path: '/dashboard',component: () => import('@/pages/Dashboard.vue'), meta: { requiresAuth: true } },
   { path: '/utxos',    component: () => import('@/pages/Utxos.vue'),     meta: { requiresAuth: true } },
   { path: '/stack',    component: () => import('@/pages/Stack.vue'),     meta: { requiresAuth: true } },

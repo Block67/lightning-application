@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const { setupAuth } = require('./auth')
 const { getXpubUtxos } = require('./utxo')
 const { setupGame } = require('./game')
+const { setupPosts } = require('./posts')
 
 const app = express()
 
@@ -27,6 +28,7 @@ function requireAuth(req, res, next) {
 
 setupAuth(app)
 setupGame(app, requireAuth)
+setupPosts(app, requireAuth)
 
 // UTXO — dérivation xpub/ypub/zpub + agrégation via mempool.space par adresse
 app.get('/api/utxos/:xpub', requireAuth, async (req, res) => {

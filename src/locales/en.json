@@ -6,7 +6,17 @@
     "dashboard": "Dashboard",
     "connect": "Connect with Lightning",
     "disconnect": "Disconnect",
-    "game": "Team Game"
+    "game": "Team Game",
+    "blog": "Blog"
+  },
+  "blog": {
+    "title": "Blog",
+    "sub": "Connect with Lightning to publish — everyone sees the live feed.",
+    "placeholder": "Write something…",
+    "publish": "Publish",
+    "needAuth": "Connect with your Lightning wallet to publish.",
+    "feed": "Live feed",
+    "empty": "No messages yet. Be the first!"
   },
   "game": {
     "title": "Team Game",
