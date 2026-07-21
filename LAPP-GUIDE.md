@@ -221,7 +221,26 @@ if (window.webln) {
 | `lnurl(address)` | `tip()` | Résout un flow LNURL-pay complet vers une Lightning Address — le montant est demandé dans l'UI de l'extension elle-même |
 | `signMessage(message)` | `login()` | Signe un message arbitraire avec la clé d'identité du wallet |
 
-> **`getInfo()` volontairement pas utilisé pour le login** — cette méthode ne renvoie pas de `node.pubkey` exploitable sur les comptes "hébergés" (ex: Alby custodial, sans vrai node Lightning derrière). La pubkey est retrouvée directement depuis la signature côté serveur (voir 6.2) plutôt que demandée séparément au client — plus robuste et plus simple.
+### 5.2bis Pourquoi `getInfo()` n'est PAS utilisé pour le login — self-hosted vs custodial
+
+Première version de ce login, on appelait `getInfo()` pour récupérer `info.node.pubkey`. Résultat en le testant avec un vrai compte Alby : **`Wallet incompatible (pubkey non exposée)`**. Comprendre pourquoi demande de comprendre une distinction essentielle dans l'écosystème Lightning.
+
+**Un "vrai" node Lightning**, c'est un logiciel (LND, Core Lightning, Eclair...) que quelqu'un fait tourner quelque part — un serveur perso, un VPS, un Raspberry Pi. Ce node a sa propre paire de clés, ouvre ses propres canaux, et existe en tant qu'entité visible sur le graphe public du réseau Lightning. Faire tourner ça, c'est du **self-hosting** : ça coûte de l'infra, ça demande de la maintenance (liquidité des canaux, sauvegardes, uptime...), et ça demande des connaissances techniques. La grande majorité des utilisateurs Lightning n'a ni l'envie ni le besoin de faire ça.
+
+**Les wallets "hébergés" (custodial)** — Alby (en mode compte hébergé, pas connecté à ton propre node), Wallet of Satoshi, Blink, Speed... — résolvent exactement ce problème : **un seul prestataire fait tourner un (ou quelques) vrai(s) node(s)**, et donne à chaque utilisateur un simple **solde dans sa propre base de données interne**, pas un node distinct sur le réseau. Vu du réseau Lightning, il n'existe qu'**un** node — celui du prestataire. Ton "wallet" n'est qu'une ligne comptable chez lui.
+
+**Conséquence directe :** quand on appelle `getInfo()` sur un compte hébergé, il n'y a tout simplement **pas de pubkey de node personnelle à renvoyer** — parce que tu n'as pas de node. Selon l'implémentation, `getInfo()` renvoie alors soit rien, soit la pubkey *du prestataire* (partagée par tous ses utilisateurs — donc totalement inutilisable pour distinguer les utilisateurs entre eux, voire dangereuse si on s'en servait comme identité !).
+
+| | Node self-hosted | Wallet custodial/hébergé (ex: Alby hosted) |
+|---|---|---|
+| Qui fait tourner le node ? | Toi | Le prestataire |
+| `getInfo().node.pubkey` | Ta pubkey réelle, unique | Absente, ou pubkey partagée du prestataire |
+| Coût / maintenance | Élevé (infra à gérer) | Nul (juste une app) |
+| Popularité réelle | Minoritaire (power users) | Majoritaire (grand public) |
+
+**Pourquoi `signMessage()` marche quand même sur un compte custodial, lui ?** Parce que signer un message ne demande *aucune* information sur la topologie du node — juste une paire de clés valide. Le prestataire peut très bien signer en interne avec une clé propre à ton compte (même si ce n'est pas une identité de node publique), ou proxifier vers son vrai node en scopant la signature à toi. Dans les deux cas, la garantie cryptographique dont on a réellement besoin — *"seule la personne qui contrôle cette clé privée a pu produire cette signature"* — reste vraie.
+
+**C'est pour ça qu'on dérive l'identité depuis la signature (recovery, voir section 6), plutôt que de dépendre de `getInfo()`** : ça déplace l'exigence de "le wallet doit exposer un vrai node avec des vraies infos" (peu fiable, optionnel dans les faits) vers "le wallet doit implémenter correctement `signMessage()`" (fonctionnalité cœur du spec WebLN, bien plus universellement supportée) — et ça marche aussi bien pour un utilisateur self-hosted que pour quelqu'un qui a juste installé Alby en 2 minutes sans jamais toucher à un node.
 
 ### 5.3 Ce qu'on a construit avec ça : le Tip Jar
 
