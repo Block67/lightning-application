@@ -2,6 +2,8 @@
 
 Dashboard Bitcoin personnel — Fee Estimator, UTXO Visualizer et DCA Tracker, connecté via Lightning (LNURL-auth).
 
+> Nouveau sur les LApps (LNURL-auth, WebLN, signatures Lightning) ? Voir [LAPP-GUIDE.md](LAPP-GUIDE.md) — cours détaillé, débutant → intermédiaire, basé sur le code de ce projet.
+
 ---
 
 ## Lancer le projet

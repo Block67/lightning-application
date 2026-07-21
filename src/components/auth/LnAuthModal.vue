@@ -30,6 +30,14 @@
 
         <!-- QR Code prêt -->
         <div v-else-if="challenge" class="qr-section">
+          <template v-if="webln.isAvailable()">
+            <button class="btn btn-primary" style="width:100%" @click="loginWithWebln" :disabled="weblnLoading">
+              ⚡ {{ weblnLoading ? 'Connexion…' : "Connecter avec l'extension" }}
+            </button>
+            <p v-if="weblnError" class="hint" style="color:#dc2626">{{ weblnError }}</p>
+            <div class="or-divider">ou scanne le QR</div>
+          </template>
+
           <img :src="challenge.qrCode" alt="LNURL QR Code" class="qr-img" />
 
           <button class="lnurl-copy" @click="copyLnurl" :title="copied ? 'Copié !' : 'Copier LNURL'">
@@ -55,18 +63,22 @@
 import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
+import { useWebln } from '@/composables/useWebln'
 
 const emit = defineEmits(['close', 'success'])
 
 const auth = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+const webln = useWebln()
 
 const loading = ref(true)
 const expired = ref(false)
 const serverError = ref(null)
 const copied = ref(false)
 const challenge = ref(null)
+const weblnLoading = ref(false)
+const weblnError = ref(null)
 
 let pollInterval = null
 let expiryTimer = null
@@ -105,6 +117,38 @@ async function init() {
   } catch (e) {
     serverError.value = e.message
     loading.value = false
+  }
+}
+
+async function loginWithWebln() {
+  if (!challenge.value) return
+  weblnError.value = null
+  weblnLoading.value = true
+
+  try {
+    const result = await webln.login(challenge.value.k1)
+    if (!result) {
+      if (webln.error.value !== 'no-extension') {
+        weblnError.value = 'Connexion annulée ou refusée par le wallet.'
+      }
+      return
+    }
+
+    await auth.weblnCallback(challenge.value.k1, result.signature, result.pubkey)
+    const status = await auth.pollStatus(challenge.value.k1)
+
+    if (status === 'ok') {
+      clearInterval(pollInterval)
+      clearTimeout(expiryTimer)
+      emit('success')
+      emit('close')
+      const redirect = route.query.redirect || '/dashboard'
+      router.push(redirect)
+    }
+  } catch (e) {
+    weblnError.value = e.message
+  } finally {
+    weblnLoading.value = false
   }
 }
 
@@ -219,6 +263,24 @@ onBeforeUnmount(() => {
 
 .error-state p { color: var(--muted); font-size: 14px; font-weight: 600; }
 .hint { font-size: 12px !important; }
+
+.or-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.or-divider::before,
+.or-divider::after {
+  content: '';
+  flex: 1;
+  height: 2px;
+  background: var(--border);
+}
 
 .wallets-hint {
   margin-top: 20px;

@@ -46,11 +46,23 @@ export const useAuthStore = defineStore('auth', () => {
     return data.status
   }
 
+  async function weblnCallback(k1, signature, pubkey) {
+    const res = await fetch(`${SERVER}/auth/webln-callback`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ k1, signature, pubkey })
+    })
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}))
+      throw new Error(data.reason || 'Signature refusée par le serveur')
+    }
+  }
+
   function logout() {
     token.value = null
     pubkey.value = null
     localStorage.removeItem('sb_token')
   }
 
-  return { token, pubkey, isAuthenticated, shortPubkey, startAuth, pollStatus, logout }
+  return { token, pubkey, isAuthenticated, shortPubkey, startAuth, pollStatus, weblnCallback, logout }
 })

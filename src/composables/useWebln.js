@@ -35,5 +35,29 @@ export function useWebln() {
     }
   }
 
-  return { sending, error, isAvailable, tip }
+  // Connexion en un clic : le wallet signe le challenge k1 lui-même,
+  // pas besoin de scanner un QR (alternative à LNURL-auth).
+  async function login(k1) {
+    error.value = null
+
+    if (!isAvailable()) {
+      error.value = 'no-extension'
+      return null
+    }
+
+    try {
+      await window.webln.enable()
+      const info = await window.webln.getInfo()
+      const pubkey = info?.node?.pubkey
+      if (!pubkey) throw new Error('Wallet incompatible (pubkey non exposée)')
+
+      const { signature } = await window.webln.signMessage(k1)
+      return { signature, pubkey }
+    } catch (e) {
+      error.value = e.message || 'cancelled'
+      return null
+    }
+  }
+
+  return { sending, error, isAvailable, tip, login }
 }
