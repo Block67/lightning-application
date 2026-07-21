@@ -223,7 +223,11 @@ Il faut se connecter (LNURL-auth ou WebLN) pour publier un message ; tout le mon
 **Store :** `src/stores/game.js`  
 **Endpoints serveur :** `GET /game/leaderboard`, `POST /game/score`, `POST /game/reset`
 
-Pensé pour un exercice de classe/atelier : on choisit une équipe (Phoenix 🐦 vs Zeus ⚡), on se connecte via Lightning, et on marque **un point par pubkey** pour son équipe (pas un compteur de clics — l'objectif est de pratiquer une vraie connexion LNURL-auth/WebLN). Leaderboard en direct (poll 2s). Scores en mémoire côté serveur ; `POST /game/reset` (protégé par `GAME_RESET_KEY` dans `server/.env`) permet de remettre à zéro entre deux sessions.
+Pensé pour un exercice de classe/atelier : on choisit une équipe (Phoenix 🐦 vs Zeus ⚡), on se connecte via Lightning, et on marque **un point par pubkey** pour son équipe (pas un compteur de clics — l'objectif est de pratiquer une vraie connexion LNURL-auth/WebLN). Leaderboard en direct (poll 2s). `POST /game/reset` (protégé par `GAME_RESET_KEY` dans `server/.env`) permet de remettre à zéro entre deux sessions.
+
+**Anti-triche :** retenter de marquer un point après en avoir déjà marqué un (via un appel API direct, hors UI normale — le bouton disparaît après un score réussi) retire le point déjà obtenu et exclut définitivement la pubkey (`excluded = 1` en base, HTTP 403 pour toute tentative suivante).
+
+**Persistance :** table `game_scores` dans `server/data.sqlite` (même base que le blog, via `node:sqlite`) — survit aux redémarrages, contrairement aux challenges LNURL-auth.
 
 ---
 
@@ -277,7 +281,7 @@ Une fois connecté, le badge pubkey dans la nav (desktop) devient un menu dérou
 | Frais / prix | Mémoire (Pinia) | Session uniquement |
 | UTXOs | Mémoire (Pinia) | Session uniquement |
 | Posts du blog | SQLite (`server/data.sqlite`) | Permanent |
-| Scores du jeu | Mémoire (serveur) | Jusqu'au redémarrage serveur / `POST /game/reset` |
+| Scores du jeu | SQLite (`server/data.sqlite`) | Permanent / `POST /game/reset` |
 
 ---
 
