@@ -196,6 +196,23 @@ Le frontend le stocke dans `localStorage` et le renvoie dans le header `Authoriz
 
 > **Pour les débutants :** le JWT n'est PAS chiffré, juste signé — n'importe qui peut lire son contenu (essaie de coller ton token sur [jwt.io](https://jwt.io)). Ne jamais y mettre d'info sensible, seulement un identifiant.
 
+### 4.7 Pseudonymat, pas anonymat
+
+Dans [Blog.vue](src/pages/Blog.vue), chaque message publié affiche la pubkey de son auteur, tronquée (`⚡ 02f3d8a1…c92e`). C'est un bon moment pour clarifier une confusion fréquente : **LNURL-auth rend l'app pseudonyme, pas anonyme.**
+
+- **Anonyme** : impossible de relier deux actions à la même personne
+- **Pseudonyme** : chaque action est reliée à une identité stable (ici, une pubkey) — mais cette identité ne révèle rien sur qui est la vraie personne derrière
+
+Concrètement, la pubkey affichée permet de savoir que **c'est toujours la même personne qui poste**, sans jamais révéler **qui** c'est dans la vraie vie — exactement comme un pseudo Reddit ou une adresse Bitcoin, à l'opposé d'un compte Google ou d'un email.
+
+Ce pseudonymat donne trois propriétés utiles, gratuitement, sans rien coder de spécial :
+
+- **Personne ne peut usurper le post de quelqu'un d'autre** — chaque post est lié à une pubkey qui a dû prouver, via signature (section 4.5), qu'elle contrôle la clé privée correspondante
+- **On peut suivre "qui a fait quoi"** — indispensable pour une mécanique comme le jeu d'équipe ou un futur "sniper" ciblant un post précis
+- **Aucune donnée personnelle n'est collectée** — pas d'email, pas de nom, pas de mot de passe à fuiter
+
+**Ce que le pseudonymat ne protège PAS** : le contexte physique. Si quelqu'un observe une personne scanner son QR LNURL-auth au même moment où un post apparaît, il peut déduire qui se cache derrière cette pubkey — l'app elle-même ne fuite rien, mais l'observation humaine autour, si. C'est une limite classique de toute identité pseudonyme (le même principe s'applique à une adresse Bitcoin : la blockchain ne connaît pas ton nom, mais si quelqu'un te voit signer une transaction sur ton téléphone, le lien est fait).
+
 ---
 
 ## 5 · Deep dive : WebLN
