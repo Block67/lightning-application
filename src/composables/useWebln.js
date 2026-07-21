@@ -47,12 +47,11 @@ export function useWebln() {
 
     try {
       await window.webln.enable()
-      const info = await window.webln.getInfo()
-      const pubkey = info?.node?.pubkey
-      if (!pubkey) throw new Error('Wallet incompatible (pubkey non exposée)')
-
+      // La pubkey n'est pas demandée via getInfo() (indisponible sur les
+      // comptes hébergés type Alby custodial) — elle est retrouvée par
+      // le serveur directement depuis la signature récupérable.
       const { signature } = await window.webln.signMessage(k1)
-      return { signature, pubkey }
+      return { signature }
     } catch (e) {
       error.value = e.message || 'cancelled'
       return null

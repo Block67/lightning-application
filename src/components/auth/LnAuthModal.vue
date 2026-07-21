@@ -129,12 +129,12 @@ async function loginWithWebln() {
     const result = await webln.login(challenge.value.k1)
     if (!result) {
       if (webln.error.value !== 'no-extension') {
-        weblnError.value = 'Connexion annulée ou refusée par le wallet.'
+        weblnError.value = webln.error.value || 'Connexion annulée ou refusée par le wallet.'
       }
       return
     }
 
-    await auth.weblnCallback(challenge.value.k1, result.signature, result.pubkey)
+    await auth.weblnCallback(challenge.value.k1, result.signature)
     const status = await auth.pollStatus(challenge.value.k1)
 
     if (status === 'ok') {

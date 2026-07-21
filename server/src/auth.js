@@ -13,7 +13,9 @@ const challenges = new Map()
 // (préfixe "Lightning Signed Message:", sig compacte 65 octets en zbase32).
 const LN_SIGNED_MSG_PREFIX = Buffer.from('Lightning Signed Message:')
 
-function verifyWeblnSignature(message, zbase32Sig, expectedPubkey) {
+// Retourne la pubkey retrouvée depuis la signature (recovery), qui sert
+// directement d'identité — pas besoin que le client la fournisse séparément.
+function recoverWeblnPubkey(message, zbase32Sig) {
   const sigBytes = zbase32.decode(zbase32Sig)
   if (sigBytes.length !== 65) throw new Error('Signature WebLN invalide')
 
@@ -29,7 +31,7 @@ function verifyWeblnSignature(message, zbase32Sig, expectedPubkey) {
     .digest()
 
   const recovered = secp256k1.ecdsaRecover(signature, recid, digest, true)
-  return Buffer.from(recovered).toString('hex') === expectedPubkey
+  return Buffer.from(recovered).toString('hex')
 }
 
 // Purge les challenges de plus de 10 minutes
@@ -81,9 +83,9 @@ function setupAuth(app) {
   // 2bis. Alternative sans QR : le navigateur signe k1 lui-même via
   // WebLN (extension type Alby) et poste directement la signature.
   app.post('/auth/webln-callback', (req, res) => {
-    const { k1, signature, pubkey } = req.body
+    const { k1, signature } = req.body
 
-    if (!k1 || !signature || !pubkey) {
+    if (!k1 || !signature) {
       return res.status(400).json({ status: 'ERROR', reason: 'Paramètres manquants' })
     }
 
@@ -93,9 +95,7 @@ function setupAuth(app) {
     }
 
     try {
-      if (!verifyWeblnSignature(k1, signature, pubkey)) {
-        return res.status(400).json({ status: 'ERROR', reason: 'Signature invalide' })
-      }
+      const pubkey = recoverWeblnPubkey(k1, signature)
       challenges.set(k1, { resolved: true, pubkey, createdAt: challenge.createdAt })
       return res.json({ status: 'OK' })
     } catch (e) {

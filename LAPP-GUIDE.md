@@ -218,9 +218,10 @@ if (window.webln) {
 | Méthode WebLN | Utilisée dans | Rôle |
 |---|---|---|
 | `enable()` | [useWebln.js](src/composables/useWebln.js) | Demande la permission de connexion (popup de l'extension) |
-| `getInfo()` | `login()` | Récupère la pubkey du node du wallet connecté |
 | `lnurl(address)` | `tip()` | Résout un flow LNURL-pay complet vers une Lightning Address — le montant est demandé dans l'UI de l'extension elle-même |
 | `signMessage(message)` | `login()` | Signe un message arbitraire avec la clé d'identité du wallet |
+
+> **`getInfo()` volontairement pas utilisé pour le login** — cette méthode ne renvoie pas de `node.pubkey` exploitable sur les comptes "hébergés" (ex: Alby custodial, sans vrai node Lightning derrière). La pubkey est retrouvée directement depuis la signature côté serveur (voir 6.2) plutôt que demandée séparément au client — plus robuste et plus simple.
 
 ### 5.3 Ce qu'on a construit avec ça : le Tip Jar
 
@@ -272,10 +273,11 @@ const digest = crypto.createHash('sha256')
   .digest()
 
 const recovered = secp256k1.ecdsaRecover(signature, recid, digest, true)
-// on compare `recovered` à la pubkey que le client prétend avoir
+// `recovered` EST l'identité de l'utilisateur — pas besoin que le client
+// la fournisse séparément, ni de la comparer à quoi que ce soit.
 ```
 
-**Pourquoi vérifier `recovered === pubkey annoncée`, et pas juste faire confiance au recover ?** Parce que n'importe qui peut signer avec n'importe quelle clé privée — la "recovery" nous donne juste *une* clé publique valide, il faut vérifier que c'est bien celle que le client dit être la sienne (celle récupérée via `getInfo()` côté frontend), sinon un attaquant pourrait signer avec sa propre clé et prétendre être quelqu'un d'autre.
+**Pourquoi c'est suffisant de faire confiance au `recover`, sans comparer à une pubkey "annoncée" ?** Parce que seule la personne possédant la clé privée correspondante peut avoir produit une signature qui, une fois passée dans `ecdsaRecover`, redonne exactement cette clé publique. Il n'y a rien à falsifier : soit la signature recover vers une clé cohérente avec `digest`, soit `ecdsaRecover` renvoie une clé totalement différente/invalide. C'est exactement le même principe que le paramètre `key` de LNURL-auth (section 4.5) — sauf qu'ici on n'a même pas besoin que le client nous dise quelle est sa pubkey, on la déduit purement de la signature.
 
 ### 6.3 zbase32, c'est quoi ?
 
@@ -310,12 +312,11 @@ for (const char of str.toLowerCase()) {
      │◀─────────────────────────────────────────────────────│
      │                                                       │
      │  webln.enable()                                       │
-     │  webln.getInfo() → pubkey                             │
      │  webln.signMessage(k1) → signature (zbase32)          │
      │                                                       │
-     │  POST /auth/webln-callback { k1, signature, pubkey }  │
+     │  POST /auth/webln-callback { k1, signature }          │
      │──────────────────────────────────────────────────────▶
-     │                     vérifie avec verifyWeblnSignature │
+     │                     recoverWeblnPubkey(k1, signature) │
      │                     marque le challenge "résolu"       │
      │         { status: OK }                                │
      │◀─────────────────────────────────────────────────────│

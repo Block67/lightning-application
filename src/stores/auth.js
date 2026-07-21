@@ -46,11 +46,11 @@ export const useAuthStore = defineStore('auth', () => {
     return data.status
   }
 
-  async function weblnCallback(k1, signature, pubkey) {
+  async function weblnCallback(k1, signature) {
     const res = await fetch(`${SERVER}/auth/webln-callback`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ k1, signature, pubkey })
+      body: JSON.stringify({ k1, signature })
     })
     if (!res.ok) {
       const data = await res.json().catch(() => ({}))
