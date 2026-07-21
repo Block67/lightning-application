@@ -1,0 +1,8 @@
+import { createApp } from 'vue'
+import { createPinia } from 'pinia'
+import router from './router/index.js'
+import { i18n } from './i18n/index.js'
+import App from './App.vue'
+import './assets/app.css'
+
+createApp(App).use(createPinia()).use(router).use(i18n).mount('#app')

@@ -1,0 +1,179 @@
+{
+  "nav": {
+    "fees": "Frais",
+    "utxos": "UTXOs",
+    "stack": "Stack",
+    "dashboard": "Dashboard",
+    "connect": "Connexion Lightning",
+    "disconnect": "Déconnecter"
+  },
+  "tip": {
+    "cta": "Tip",
+    "sending": "Envoi…",
+    "success": "Merci pour le zap ! ⚡",
+    "no_extension": "Aucune extension Lightning détectée. Paye directement à cette adresse :",
+    "copy": "Copier l'adresse",
+    "copied": "Copié !"
+  },
+  "landing": {
+    "ticker": "Bitcoin • Souveraineté financière • Aucun KYC • Open source • Self-custody • LNURL-auth • Aucune donnée serveur •",
+    "badge": "Bitcoin Dashboard Personnel",
+    "title_1": "Stack.",
+    "title_2": "Analyse.",
+    "title_3": "Souverain.",
+    "sub": "Frais mempool en temps réel, visualisation de tes UTXOs et suivi de ton DCA — sans compte, sans serveur, authentifié par ton wallet Lightning.",
+    "cta_connect": "⚡ Se connecter avec Lightning",
+    "cta_fees": "Voir les frais →",
+    "stat_server": "Données serveur",
+    "stat_opensource": "Open source",
+    "stat_sovereignty": "Souveraineté",
+    "features_label": "Fonctionnalités",
+    "features_title": "Trois outils. Un seul dashboard.",
+    "features_sub": "Pensé pour les Bitcoiners souverains. Tout ce qu'il te faut, rien de superflu.",
+    "feat1_title": "⚡ Fee Estimator",
+    "feat1_desc": "Jauge SVG en temps réel, 4 niveaux de frais, historique 7 jours. Calcule le coût de tes transactions.",
+    "feat1_cta": "Voir les frais →",
+    "feat2_title": "🔗 UTXO Visualizer",
+    "feat2_desc": "Entre ton xpub — visualise tes UTXOs en bulles proportionnelles. Conseil de consolidation automatique.",
+    "feat2_cta": "Voir mes UTXOs →",
+    "feat3_title": "📈 Sat Stacker",
+    "feat3_desc": "Journal de DCA : date, sats, EUR. Courbe d'accumulation, prix moyen pondéré et P&L temps réel.",
+    "feat3_cta": "Mon stack →",
+    "feat4_title": "🏠 Dashboard",
+    "feat4_desc": "Vue d'ensemble : frais actuels, valeur du stack, UTXOs et P&L en un coup d'œil.",
+    "feat5_title": "📱 PWA",
+    "feat5_desc": "Installable sur mobile. Fonctionne hors ligne pour les données locales. Notif frais configurable.",
+    "feat6_title": "🔐 LNURL-auth",
+    "feat6_desc": "Authentification par signature cryptographique Lightning. Aucun mot de passe, aucun email.",
+    "lock_tag": "⚡ Connexion requise",
+    "how_label": "Comment ça marche",
+    "how_title": "Aucun compte. Juste ton wallet.",
+    "step1_num": "01",
+    "step1_title": "Scanne le QR code",
+    "step1_desc": "Clique sur 'Connexion Lightning' — scanne le QR avec Phoenix, Zeus, Alby ou Breez.",
+    "step2_num": "02",
+    "step2_title": "Signe en un tap",
+    "step2_desc": "Ton wallet signe un challenge LNURL-auth avec ta clé Lightning. Aucun sat dépensé.",
+    "step3_num": "03",
+    "step3_title": "Tes données t'appartiennent",
+    "step3_desc": "UTXOs et DCA stockés dans IndexedDB sur ton appareil. Le serveur ne voit que la signature.",
+    "vs_label": "Comparaison",
+    "vs_title": "Lightning App vs les alternatives",
+    "vs_col_sb": "Lightning App",
+    "vs_col_bank": "Application bancaire",
+    "vs_col_cex": "CEX",
+    "vs_r1": "Données locales",
+    "vs_r2": "Authentification",
+    "vs_r3": "KYC requis",
+    "vs_r4": "Open source",
+    "vs_r5": "Frais en temps réel",
+    "vs_r6": "Self-custody",
+    "vs_sb_r1": "IndexedDB (navigateur)",
+    "vs_sb_r2": "Lightning signature",
+    "vs_sb_r3": "Non",
+    "vs_sb_r4": "Oui",
+    "vs_sb_r5": "Oui (mempool.space)",
+    "vs_sb_r6": "Total",
+    "vs_bank_r1": "Serveur centralisé",
+    "vs_bank_r2": "Email / mot de passe",
+    "vs_bank_r3": "Oui",
+    "vs_bank_r4": "Non",
+    "vs_bank_r5": "Non",
+    "vs_bank_r6": "Aucune",
+    "vs_cex_r1": "Cloud tiers",
+    "vs_cex_r2": "Email / 2FA",
+    "vs_cex_r3": "Oui",
+    "vs_cex_r4": "Rarement",
+    "vs_cex_r5": "Limitée",
+    "vs_cex_r6": "Non",
+    "priv_label": "Souveraineté",
+    "priv_title": "Tes données ne quittent jamais ton appareil.",
+    "priv_sub": "Aucune base de données. Aucun tracking. Le serveur émet un JWT puis oublie tout. Tes achats DCA et ton xpub restent dans IndexedDB sur ton navigateur.",
+    "priv_1": "Auth par signature cryptographique LNURL",
+    "priv_2": "Xpub → mempool.space directement depuis le navigateur",
+    "priv_3": "DCA stocké localement, jamais envoyé",
+    "priv_4": "Open source — audite toi-même",
+    "priv_5": "PWA installable sans app store",
+    "cta_title": "Prêt à stack souverainement ?",
+    "cta_sub": "Aucun compte, aucun KYC, aucune donnée serveur.",
+    "cta_connect2": "⚡ Se connecter avec Lightning",
+    "cta_fees2": "Voir les frais sans compte →"
+  },
+  "fees": {
+    "title": "⚡ Frais Bitcoin",
+    "sub": "Mempool en temps réel · mis à jour toutes les 30 secondes",
+    "recommended": "Frais recommandés",
+    "updated": "Màj",
+    "calculator": "Calculateur de transaction",
+    "inputs": "Inputs (UTXOs dépensés)",
+    "outputs": "Outputs (destinataires)",
+    "history": "Historique des frais — 7 jours"
+  },
+  "utxos": {
+    "title": "🔗 UTXO Visualizer",
+    "sub": "Visualise et analyse tes UTXOs Bitcoin depuis ton xpub",
+    "xpub_label": "Ton xpub / zpub",
+    "privacy_badge": "Aucune donnée envoyée au serveur",
+    "bubbles_title": "Visualisation (taille = valeur)",
+    "detail_title": "Détail des UTXOs",
+    "total_sats": "Total sats",
+    "count": "UTXOs",
+    "avg": "Valeur moyenne / UTXO",
+    "largest": "Plus grand UTXO"
+  },
+  "stack": {
+    "title": "📈 Sat Stacker",
+    "sub": "Suivi de ton DCA Bitcoin — stocké localement dans ton navigateur",
+    "chart_title": "Courbe d'accumulation",
+    "add_title": "Ajouter un achat",
+    "history_title": "Historique des achats",
+    "empty": "Aucun achat enregistré. Ajoute ton premier achat.",
+    "date": "Date",
+    "sats": "Sats",
+    "eur": "EUR",
+    "price": "Prix/BTC",
+    "total": "Total"
+  },
+  "terms": {
+    "satVb": {
+      "label": "Satoshi par vByte",
+      "desc": "Unité de frais Bitcoin. Plus le chiffre est élevé, plus vite ta transaction sera confirmée dans un bloc."
+    },
+    "utxo": {
+      "label": "Unspent Transaction Output",
+      "desc": "Une 'pièce' Bitcoin non dépensée dans ton wallet. Plusieurs UTXOs = plusieurs dépôts séparés."
+    },
+    "dca": {
+      "label": "Dollar Cost Averaging",
+      "desc": "Acheter régulièrement des sats (ex. chaque semaine) pour lisser le prix d'entrée sur le long terme."
+    },
+    "xpub": {
+      "label": "Extended Public Key",
+      "desc": "Clé publique maître de ton wallet HD. Permet de voir tes adresses sans exposer ta clé privée."
+    },
+    "mempool": {
+      "label": "Memory Pool",
+      "desc": "File d'attente des transactions Bitcoin non confirmées. Mempool pleine = frais élevés."
+    },
+    "consolidation": {
+      "label": "Consolidation UTXO",
+      "desc": "Fusionner plusieurs petits UTXOs en un seul. Pratique quand les frais sont bas."
+    },
+    "vbyte": {
+      "label": "Virtual Byte",
+      "desc": "Unité de taille d'une transaction SegWit. Une tx P2WPKH standard = environ 140 vB."
+    },
+    "lnurl": {
+      "label": "Lightning URL Auth",
+      "desc": "Protocole d'auth via Lightning. Ton wallet signe un challenge cryptographique — aucun sat dépensé."
+    },
+    "pnl": {
+      "label": "Profit & Loss",
+      "desc": "Différence entre la valeur actuelle de ton stack et le total investi en euros."
+    },
+    "jwt": {
+      "label": "JSON Web Token",
+      "desc": "Jeton d'authentification signé par le serveur. Stocké localement, valide 30 jours."
+    }
+  }
+}

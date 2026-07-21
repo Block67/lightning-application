@@ -1,0 +1,26 @@
+{
+  "name": "lightning-application",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently --names \"server,client\" -c \"cyan,yellow\" \"node --watch server/src/index.js\" \"vite\"",
+    "dev:client": "vite",
+    "dev:server": "node --watch server/src/index.js",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "dexie": "^3.2.7",
+    "pinia": "^2.3.1",
+    "vue": "^3.5.38",
+    "vue-i18n": "^9.14.5",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.4",
+    "concurrently": "^9.1.2",
+    "vite": "^7.0.7",
+    "vite-plugin-pwa": "^1.0.0"
+  }
+}

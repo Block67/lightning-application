@@ -1,0 +1,179 @@
+{
+  "nav": {
+    "fees": "Fees",
+    "utxos": "UTXOs",
+    "stack": "Stack",
+    "dashboard": "Dashboard",
+    "connect": "Connect with Lightning",
+    "disconnect": "Disconnect"
+  },
+  "tip": {
+    "cta": "Tip",
+    "sending": "Sending…",
+    "success": "Thanks for the zap! ⚡",
+    "no_extension": "No Lightning extension detected. Pay directly to this address:",
+    "copy": "Copy address",
+    "copied": "Copied!"
+  },
+  "landing": {
+    "ticker": "Bitcoin • Financial Sovereignty • No KYC • Open Source • Self-custody • LNURL-auth • Zero Server Data •",
+    "badge": "Personal Bitcoin Dashboard",
+    "title_1": "Stack.",
+    "title_2": "Analyze.",
+    "title_3": "Sovereign.",
+    "sub": "Real-time mempool fees, UTXO visualization and DCA tracking — no account, no server, authenticated by your Lightning wallet.",
+    "cta_connect": "⚡ Connect with Lightning",
+    "cta_fees": "View fees →",
+    "stat_server": "Server data",
+    "stat_opensource": "Open source",
+    "stat_sovereignty": "Sovereignty",
+    "features_label": "Features",
+    "features_title": "Three tools. One dashboard.",
+    "features_sub": "Built for sovereign Bitcoiners. Everything you need, nothing superfluous.",
+    "feat1_title": "⚡ Fee Estimator",
+    "feat1_desc": "Real-time SVG gauge, 4 fee levels, 7-day history. Calculate the cost of your transactions.",
+    "feat1_cta": "View fees →",
+    "feat2_title": "🔗 UTXO Visualizer",
+    "feat2_desc": "Enter your xpub — visualize your UTXOs as proportional bubbles. Automatic consolidation advice.",
+    "feat2_cta": "View my UTXOs →",
+    "feat3_title": "📈 Sat Stacker",
+    "feat3_desc": "DCA journal: date, sats, EUR. Accumulation curve, weighted average price and real-time P&L.",
+    "feat3_cta": "My stack →",
+    "feat4_title": "🏠 Dashboard",
+    "feat4_desc": "Overview: current fees, stack value, UTXOs and P&L at a glance.",
+    "feat5_title": "📱 PWA",
+    "feat5_desc": "Installable on mobile. Works offline for local data. Fee notifications.",
+    "feat6_title": "🔐 LNURL-auth",
+    "feat6_desc": "Authentication via Lightning cryptographic signature. No password, no email.",
+    "lock_tag": "⚡ Login required",
+    "how_label": "How it works",
+    "how_title": "No account. Just your wallet.",
+    "step1_num": "01",
+    "step1_title": "Scan the QR code",
+    "step1_desc": "Click 'Connect with Lightning' — scan the QR with Phoenix, Zeus, Alby or Breez.",
+    "step2_num": "02",
+    "step2_title": "Sign with one tap",
+    "step2_desc": "Your wallet signs an LNURL-auth challenge with your Lightning key. No sats spent.",
+    "step3_num": "03",
+    "step3_title": "Your data belongs to you",
+    "step3_desc": "UTXOs and DCA stored in IndexedDB on your device. The server only sees the signature.",
+    "vs_label": "Comparison",
+    "vs_title": "Lightning App vs the alternatives",
+    "vs_col_sb": "Lightning App",
+    "vs_col_bank": "Banking app",
+    "vs_col_cex": "CEX",
+    "vs_r1": "Data storage",
+    "vs_r2": "Authentication",
+    "vs_r3": "KYC required",
+    "vs_r4": "Open source",
+    "vs_r5": "Real-time fees",
+    "vs_r6": "Self-custody",
+    "vs_sb_r1": "IndexedDB (browser)",
+    "vs_sb_r2": "Lightning signature",
+    "vs_sb_r3": "No",
+    "vs_sb_r4": "Yes",
+    "vs_sb_r5": "Yes (mempool.space)",
+    "vs_sb_r6": "Full",
+    "vs_bank_r1": "Centralized server",
+    "vs_bank_r2": "Email / password",
+    "vs_bank_r3": "Yes",
+    "vs_bank_r4": "No",
+    "vs_bank_r5": "No",
+    "vs_bank_r6": "None",
+    "vs_cex_r1": "Third-party cloud",
+    "vs_cex_r2": "Email / 2FA",
+    "vs_cex_r3": "Yes",
+    "vs_cex_r4": "Rarely",
+    "vs_cex_r5": "Limited",
+    "vs_cex_r6": "No",
+    "priv_label": "Sovereignty",
+    "priv_title": "Your data never leaves your device.",
+    "priv_sub": "No database. No tracking. The server issues a JWT then forgets everything. Your DCA purchases and xpub stay in IndexedDB on your browser.",
+    "priv_1": "Auth via LNURL cryptographic signature",
+    "priv_2": "Xpub → mempool.space directly from the browser",
+    "priv_3": "DCA stored locally, never sent",
+    "priv_4": "Open source — audit it yourself",
+    "priv_5": "PWA installable without app store",
+    "cta_title": "Ready to stack sovereignly?",
+    "cta_sub": "No account, no KYC, no server data.",
+    "cta_connect2": "⚡ Connect with Lightning",
+    "cta_fees2": "View fees without account →"
+  },
+  "fees": {
+    "title": "⚡ Bitcoin Fees",
+    "sub": "Real-time mempool · updated every 30 seconds",
+    "recommended": "Recommended fees",
+    "updated": "Updated",
+    "calculator": "Transaction calculator",
+    "inputs": "Inputs (UTXOs spent)",
+    "outputs": "Outputs (recipients)",
+    "history": "Fee history — 7 days"
+  },
+  "utxos": {
+    "title": "🔗 UTXO Visualizer",
+    "sub": "Visualize and analyze your Bitcoin UTXOs from your xpub",
+    "xpub_label": "Your xpub / zpub",
+    "privacy_badge": "No data sent to server",
+    "bubbles_title": "Visualization (size = value)",
+    "detail_title": "UTXO details",
+    "total_sats": "Total sats",
+    "count": "UTXOs",
+    "avg": "Average value / UTXO",
+    "largest": "Largest UTXO"
+  },
+  "stack": {
+    "title": "📈 Sat Stacker",
+    "sub": "Bitcoin DCA tracking — stored locally in your browser",
+    "chart_title": "Accumulation curve",
+    "add_title": "Add a purchase",
+    "history_title": "Purchase history",
+    "empty": "No purchases recorded. Add your first purchase.",
+    "date": "Date",
+    "sats": "Sats",
+    "eur": "EUR",
+    "price": "Price/BTC",
+    "total": "Total"
+  },
+  "terms": {
+    "satVb": {
+      "label": "Satoshi per vByte",
+      "desc": "Bitcoin fee unit. The higher this number, the faster your transaction will be confirmed in a block."
+    },
+    "utxo": {
+      "label": "Unspent Transaction Output",
+      "desc": "An unspent Bitcoin 'coin' in your wallet. Multiple UTXOs = multiple separate deposits."
+    },
+    "dca": {
+      "label": "Dollar Cost Averaging",
+      "desc": "Regularly buying sats (e.g. every week) to average out your entry price over the long term."
+    },
+    "xpub": {
+      "label": "Extended Public Key",
+      "desc": "Master public key of your HD wallet. Lets you see all your addresses without exposing your private key."
+    },
+    "mempool": {
+      "label": "Memory Pool",
+      "desc": "Queue of unconfirmed Bitcoin transactions. Full mempool = high fees."
+    },
+    "consolidation": {
+      "label": "UTXO Consolidation",
+      "desc": "Merge multiple small UTXOs into one. Useful when fees are low."
+    },
+    "vbyte": {
+      "label": "Virtual Byte",
+      "desc": "Size unit for a SegWit transaction. A standard P2WPKH tx = about 140 vB."
+    },
+    "lnurl": {
+      "label": "Lightning URL Auth",
+      "desc": "Auth protocol via Lightning. Your wallet signs a cryptographic challenge — no sats spent."
+    },
+    "pnl": {
+      "label": "Profit & Loss",
+      "desc": "Difference between the current value of your stack and total invested in euros."
+    },
+    "jwt": {
+      "label": "JSON Web Token",
+      "desc": "Authentication token signed by the server. Stored locally, valid for 30 days."
+    }
+  }
+}
