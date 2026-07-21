@@ -1,9 +1,6 @@
 {
   "nav": {
-    "fees": "Fees",
     "utxos": "UTXOs",
-    "stack": "Stack",
-    "dashboard": "Dashboard",
     "connect": "Connect with Lightning",
     "disconnect": "Disconnect",
     "game": "Team Game",
@@ -54,15 +51,15 @@
     "features_label": "Features",
     "features_title": "Three tools. One dashboard.",
     "features_sub": "Built for sovereign Bitcoiners. Everything you need, nothing superfluous.",
-    "feat1_title": "⚡ Fee Estimator",
-    "feat1_desc": "Real-time SVG gauge, 4 fee levels, 7-day history. Calculate the cost of your transactions.",
-    "feat1_cta": "View fees →",
     "feat2_title": "🔗 UTXO Visualizer",
     "feat2_desc": "Enter your xpub — visualize your UTXOs as proportional bubbles. Automatic consolidation advice.",
     "feat2_cta": "View my UTXOs →",
-    "feat3_title": "📈 Sat Stacker",
-    "feat3_desc": "DCA journal: date, sats, EUR. Accumulation curve, weighted average price and real-time P&L.",
-    "feat3_cta": "My stack →",
+    "feat_blog_title": "📝 Blog",
+    "feat_blog_desc": "Connect with Lightning to publish — everyone sees the live feed, no account or email needed.",
+    "feat_blog_cta": "View the blog →",
+    "feat_game_title": "🎮 Team Game",
+    "feat_game_desc": "Pick a team, connect with Lightning, score a point. Great for practicing LNURL-auth as a group.",
+    "feat_game_cta": "Play →",
     "feat4_title": "🏠 Dashboard",
     "feat4_desc": "Overview: current fees, stack value, UTXOs and P&L at a glance.",
     "feat5_title": "📱 PWA",
@@ -121,17 +118,7 @@
     "cta_title": "Ready to stack sovereignly?",
     "cta_sub": "No account, no KYC, no server data.",
     "cta_connect2": "⚡ Connect with Lightning",
-    "cta_fees2": "View fees without account →"
-  },
-  "fees": {
-    "title": "⚡ Bitcoin Fees",
-    "sub": "Real-time mempool · updated every 30 seconds",
-    "recommended": "Recommended fees",
-    "updated": "Updated",
-    "calculator": "Transaction calculator",
-    "inputs": "Inputs (UTXOs spent)",
-    "outputs": "Outputs (recipients)",
-    "history": "Fee history — 7 days"
+    "cta_blog2": "View the blog →"
   },
   "utxos": {
     "title": "🔗 UTXO Visualizer",
@@ -145,55 +132,22 @@
     "avg": "Average value / UTXO",
     "largest": "Largest UTXO"
   },
-  "stack": {
-    "title": "📈 Sat Stacker",
-    "sub": "Bitcoin DCA tracking — stored locally in your browser",
-    "chart_title": "Accumulation curve",
-    "add_title": "Add a purchase",
-    "history_title": "Purchase history",
-    "empty": "No purchases recorded. Add your first purchase.",
-    "date": "Date",
-    "sats": "Sats",
-    "eur": "EUR",
-    "price": "Price/BTC",
-    "total": "Total"
-  },
   "terms": {
-    "satVb": {
-      "label": "Satoshi per vByte",
-      "desc": "Bitcoin fee unit. The higher this number, the faster your transaction will be confirmed in a block."
-    },
     "utxo": {
       "label": "Unspent Transaction Output",
       "desc": "An unspent Bitcoin 'coin' in your wallet. Multiple UTXOs = multiple separate deposits."
-    },
-    "dca": {
-      "label": "Dollar Cost Averaging",
-      "desc": "Regularly buying sats (e.g. every week) to average out your entry price over the long term."
     },
     "xpub": {
       "label": "Extended Public Key",
       "desc": "Master public key of your HD wallet. Lets you see all your addresses without exposing your private key."
     },
-    "mempool": {
-      "label": "Memory Pool",
-      "desc": "Queue of unconfirmed Bitcoin transactions. Full mempool = high fees."
-    },
     "consolidation": {
       "label": "UTXO Consolidation",
       "desc": "Merge multiple small UTXOs into one. Useful when fees are low."
     },
-    "vbyte": {
-      "label": "Virtual Byte",
-      "desc": "Size unit for a SegWit transaction. A standard P2WPKH tx = about 140 vB."
-    },
     "lnurl": {
       "label": "Lightning URL Auth",
       "desc": "Auth protocol via Lightning. Your wallet signs a cryptographic challenge — no sats spent."
-    },
-    "pnl": {
-      "label": "Profit & Loss",
-      "desc": "Difference between the current value of your stack and total invested in euros."
     },
     "jwt": {
       "label": "JSON Web Token",

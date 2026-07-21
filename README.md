@@ -1,6 +1,6 @@
 # Lightning App
 
-Dashboard Bitcoin personnel — Fee Estimator, UTXO Visualizer et DCA Tracker, connecté via Lightning (LNURL-auth).
+App Bitcoin/Lightning — UTXO Visualizer, Blog et Jeu d'équipe, connectés via Lightning (LNURL-auth + WebLN).
 
 > Nouveau sur les LApps (LNURL-auth, WebLN, signatures Lightning) ? Voir [LAPP-GUIDE.md](LAPP-GUIDE.md) — cours détaillé, débutant → intermédiaire, basé sur le code de ce projet.
 
@@ -33,20 +33,23 @@ ngrok http 3000
 ┌─────────────────────────────────────────────────────────┐
 │  Browser (Vue 3 + Vite)                                  │
 │                                                          │
-│  Landing  →  Fees  →  UTXOs  →  Stack  →  Dashboard     │
+│  Landing  →  UTXOs  →  Blog  →  Jeu d'équipe             │
 │                                                          │
-│  Pinia stores : fees | utxo | stack | auth               │
-│  IndexedDB (Dexie) : achats DCA + xpub par utilisateur   │
+│  Pinia stores : auth | utxo | fees (interne) | game | posts │
+│  IndexedDB (Dexie) : xpub sauvegardé par utilisateur      │
 └──────────────────────────┬──────────────────────────────┘
-                           │ fetch /auth/* et /api/*
+                           │ fetch /auth/*, /api/*, /game/*, /posts
                            │ (proxy Vite → localhost:3000)
 ┌──────────────────────────▼──────────────────────────────┐
 │  Serveur Express (Node.js)                               │
 │                                                          │
 │  /auth/challenge  →  génère k1 + LNURL QR               │
 │  /auth/callback   ←  wallet Lightning signe et rappelle  │
+│  /auth/webln-callback ← signature WebLN (login 1 clic)   │
 │  /auth/status     →  frontend poll, reçoit le JWT        │
 │  /api/utxos/:xpub →  dérive adresses + agrège UTXOs      │
+│  /game/*          →  jeu d'équipe (score, leaderboard)    │
+│  /posts           →  blog (CRUD REST)                     │
 └──────────────────────────┬──────────────────────────────┘
                            │ fetch
 ┌──────────────────────────▼──────────────────────────────┐
@@ -63,8 +66,8 @@ ngrok http 3000
 
 ## Authentification LNURL-auth
 
-**Accessible à tous :** Fee Estimator  
-**Connexion requise :** UTXO Visualizer + Sat Stacker + Dashboard
+**Accessible à tous :** consultation du Blog, consultation du Jeu d'équipe  
+**Connexion requise :** UTXO Visualizer, publier sur le Blog, marquer un point dans le Jeu
 
 ### Comment ça fonctionne
 
@@ -105,59 +108,7 @@ LNURL-auth est un protocole qui permet de se connecter à un site avec son walle
 
 ---
 
-## Feature 1 — Fee Estimator
-
-**Accès :** public, sans connexion  
-**Page :** `/fees`  
-**Store :** `src/stores/fees.js`
-
-### Ce que ça fait
-
-Affiche en temps réel les frais de transaction Bitcoin recommandés par le mempool. Se met à jour toutes les **30 secondes** via un polling automatique (démarre à `onMounted`, s'arrête à `onBeforeUnmount`).
-
-### Les données
-
-Appel : `GET https://mempool.space/api/v1/fees/recommended`
-
-Réponse :
-```json
-{
-  "fastestFee": 12,    // sat/vB — confirmation en ~10 min
-  "halfHourFee": 8,    // sat/vB — confirmation en ~30 min
-  "hourFee": 5,        // sat/vB — confirmation en ~1h
-  "economyFee": 2,     // sat/vB — confirmation en 1h+
-  "minimumFee": 1      // sat/vB — minimum accepté par les nœuds
-}
-```
-
-### Calcul du niveau de congestion
-
-```js
-fastestFee <= 5  → "low"    (frais bas, vert)
-fastestFee <= 25 → "medium" (modérés, orange)
-fastestFee > 25  → "high"   (élevés, rouge)
-```
-
-### Calculateur de transaction
-
-Formule de taille pour une transaction P2WPKH SegWit :
-```
-taille (vBytes) = 10 + (nb_inputs × 68) + (nb_outputs × 31)
-frais = taille × taux_sat_vB
-```
-
-Exemple : 1 entrée + 2 sorties = 10 + 68 + 62 = **140 vB**  
-À 10 sat/vB → **1 400 sats** de frais
-
-### Historique 7 jours
-
-Appel : `GET https://mempool.space/api/v1/mining/blocks/fee-rates/1w`
-
-Retourne un tableau de blocs avec le taux médian de frais. Affiché sous forme de courbe SVG (composant `FeeHistory.vue`).
-
----
-
-## Feature 2 — UTXO Visualizer
+## Feature 1 — UTXO Visualizer
 
 **Accès :** connexion Lightning requise  
 **Page :** `/utxos`  
@@ -248,102 +199,33 @@ worthIt = true  si frais_heure <= 5 sat/vB
                 (frais bas = bon moment pour consolider)
 ```
 
----
-
-## Feature 3 — Sat Stacker (DCA Tracker)
-
-**Accès :** connexion Lightning requise  
-**Page :** `/stack`  
-**Store :** `src/stores/stack.js`  
-**Stockage :** IndexedDB (Dexie), clé = pubkey Lightning
-
-### Ce qu'est le DCA
-
-Le **DCA** (Dollar Cost Averaging) consiste à acheter du Bitcoin régulièrement (ex: 50€ par semaine) au lieu de tout acheter d'un coup. Cela lisse le prix d'achat moyen et réduit l'impact de la volatilité.
-
-### Ce que le tracker enregistre
-
-Chaque achat contient :
-```js
-{
-  id: 1,                  // auto-incrément
-  pubkey: "02f3d...",     // identifiant Lightning de l'utilisateur
-  date: "2024-03-15",     // date de l'achat
-  sats: 250000,           // montant en satoshis achetés
-  eurSpent: 120,          // euros dépensés
-  priceAtBuy: 48000       // prix du Bitcoin ce jour-là (EUR)
-}
-```
-
-### Calculs P&L
-
-```
-Total sats accumulés  = Σ sats de chaque achat
-Total euros dépensés  = Σ eurSpent de chaque achat
-
-Prix moyen d'achat    = totalEurSpent / (totalSats / 1e8)
-Valeur actuelle       = (totalSats / 1e8) × prixActuelBTC
-
-P&L (€)   = valeurActuelle − totalEurSpent
-P&L (%)   = (P&L / totalEurSpent) × 100
-```
-
-Le prix actuel BTC est récupéré depuis `mempool.space/api/v1/prices` (retourne EUR, USD, GBP...).
-
-**Exemple :**
-```
-Acheté 3 fois : 100k sats à 30k€/BTC, 150k sats à 35k€/BTC, 200k sats à 40k€/BTC
-Total : 450k sats | 48€ + 52.5€ + 80€ = 180.5€ dépensés
-Prix moyen : 180.5 / (450000/1e8) = 40 111 €/BTC
-Si BTC vaut 45k€ → Valeur = 45k × 0.0045 = 202.5€
-P&L = +22€ (+12.2%)
-```
-
-### Courbe d'accumulation
-
-Le graphe SVG trace les sats accumulés dans le temps :
-```js
-// Tri par date, puis accumulation progressive
-[100k, 250k, 450k] sats aux dates des achats
-```
-
-### Stockage local (IndexedDB)
-
-Les données ne quittent **jamais** le navigateur. Dexie.js gère deux tables :
-
-```
-Table "purchases" :
-  ++id (auto), pubkey (index), date
-  → tous les achats DCA de l'utilisateur
-
-Table "settings" :
-  pubkey (clé primaire)
-  → xpub sauvegardé pour ne pas le re-saisir à chaque fois
-```
-
-Chaque utilisateur est isolé par sa `pubkey` Lightning. Si tu te connectes avec un autre wallet, tu verras des données vides.
+> Le taux de frais utilisé ici vient de `src/stores/fees.js` — ce store n'a plus de page dédiée, il sert uniquement en interne à ce calcul de consolidation (`GET mempool.space/api/v1/fees/recommended`).
 
 ---
 
-## Feature 4 — Dashboard
+## Feature 2 — Blog (mur de publication)
 
-**Accès :** connexion Lightning requise  
-**Page :** `/dashboard`
+**Accès :** lecture publique · publication réservée aux connectés  
+**Page :** `/blog`  
+**Store :** `src/stores/posts.js`  
+**Endpoints serveur :** `GET/POST /posts`, `GET/DELETE /posts/:id`
 
-Vue d'ensemble qui agrège les 3 features :
-
-| Bloc | Source |
-|------|--------|
-| Frais actuels (sat/vB) | `feesStore.fees.fastestFee` |
-| Mon stack (sats + BTC) | `stackStore.totalSats` |
-| Valeur actuelle (€) | `stackStore.currentValue` |
-| P&L (€ et %) | `stackStore.pnl` + `stackStore.pnlPct` |
-| Jauge des frais | `FeeGauge.vue` |
-| UTXOs + consolidation | `utxoStore.utxoCount` |
+Il faut se connecter (LNURL-auth ou WebLN) pour publier un message ; tout le monde voit le fil en direct (poll toutes les 2s). Chaque post affiche la pubkey (tronquée) de l'auteur — pseudonyme, pas anonyme, voir [LAPP-GUIDE.md § 4.7](LAPP-GUIDE.md#47-pseudonymat-pas-anonymat). CRUD REST classique (`GET`/`POST`/`DELETE`, codes 200/201/204/403/404) — voir détail des routes dans `server/src/posts.js`. Chaque auteur peut supprimer ses propres posts.
 
 ---
 
-## Feature 5 — Tip Jar (WebLN)
+## Feature 3 — Jeu d'équipe
+
+**Accès :** lecture publique · marquer un point réservé aux connectés  
+**Page :** `/game`  
+**Store :** `src/stores/game.js`  
+**Endpoints serveur :** `GET /game/leaderboard`, `POST /game/score`, `POST /game/reset`
+
+Pensé pour un exercice de classe/atelier : on choisit une équipe (Phoenix 🐦 vs Zeus ⚡), on se connecte via Lightning, et on marque **un point par pubkey** pour son équipe (pas un compteur de clics — l'objectif est de pratiquer une vraie connexion LNURL-auth/WebLN). Leaderboard en direct (poll 2s). Scores en mémoire côté serveur ; `POST /game/reset` (protégé par `GAME_RESET_KEY` dans `server/.env`) permet de remettre à zéro entre deux sessions.
+
+---
+
+## Feature 4 — Tip Jar (WebLN)
 
 **Accès :** public, sans connexion
 **Composant :** `src/components/TipButton.vue`
@@ -375,16 +257,25 @@ Pour débloquer un contenu/service après paiement, il faudrait inverser le flow
 
 ---
 
+## Feature 5 — Menu Profil
+
+**Composant :** `src/components/ProfileMenu.vue`
+
+Une fois connecté, le badge pubkey dans la nav (desktop) devient un menu déroulant : pubkey complète (copiable), sélecteur de langue, déconnexion. Remplace l'ancien groupe de boutons à plat une fois authentifié. Sur mobile, ces actions restent affichées directement dans le menu hamburger (pas de dropdown imbriqué).
+
+---
+
 ## Stockage des données
 
 | Donnée | Où | Persistance |
 |--------|-----|-------------|
 | Token JWT | `localStorage("sb_token")` | 30 jours |
 | Langue choisie | `localStorage("sb_lang")` | Permanent |
-| Achats DCA | IndexedDB table `purchases` | Permanent |
 | xpub / zpub | IndexedDB table `settings` | Permanent |
 | Frais / prix | Mémoire (Pinia) | Session uniquement |
 | UTXOs | Mémoire (Pinia) | Session uniquement |
+| Posts du blog | Mémoire (serveur) | Jusqu'au redémarrage serveur |
+| Scores du jeu | Mémoire (serveur) | Jusqu'au redémarrage serveur / `POST /game/reset` |
 
 ---
 
@@ -394,9 +285,17 @@ Pour débloquer un contenu/service après paiement, il faudrait inverser le flow
 |---------|-------|------|-------------|
 | `GET` | `/auth/challenge` | — | Génère k1 + QR LNURL |
 | `GET` | `/auth/callback` | — | Reçoit signature wallet |
+| `POST` | `/auth/webln-callback` | — | Reçoit signature WebLN (login 1 clic) |
 | `GET` | `/auth/status` | — | Poll → retourne JWT |
 | `GET` | `/auth/me` | JWT | Vérifie token |
 | `GET` | `/api/utxos/:xpub` | JWT | Dérive adresses + UTXOs |
+| `GET` | `/posts` | — | Liste les posts du blog |
+| `GET` | `/posts/:id` | — | Détail d'un post |
+| `POST` | `/posts` | JWT | Publie un post |
+| `DELETE` | `/posts/:id` | JWT | Supprime son propre post |
+| `GET` | `/game/leaderboard` | — | Scores par équipe |
+| `POST` | `/game/score` | JWT | Marque un point (1/pubkey) |
+| `POST` | `/game/reset` | `x-reset-key` | Remet le jeu à zéro |
 | `GET` | `/health` | — | Vérification serveur |
 
 ---

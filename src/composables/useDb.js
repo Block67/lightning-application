@@ -7,19 +7,13 @@ db.version(1).stores({
   settings:  'pubkey'                // xpub et préférences par utilisateur
 })
 
+// Feature DCA/Stack retirée — on supprime proprement la table côté client.
+db.version(2).stores({
+  purchases: null,
+  settings:  'pubkey'
+})
+
 export function useDb() {
-  async function addPurchase(pubkey, { date, sats, eurSpent, priceAtBuy }) {
-    return db.purchases.add({ pubkey, date, sats, eurSpent, priceAtBuy })
-  }
-
-  async function getPurchases(pubkey) {
-    return db.purchases.where('pubkey').equals(pubkey).sortBy('date')
-  }
-
-  async function deletePurchase(id) {
-    return db.purchases.delete(id)
-  }
-
   async function saveSettings(pubkey, data) {
     const existing = await db.settings.get(pubkey)
     return db.settings.put({ ...(existing || {}), pubkey, ...data })
@@ -29,5 +23,5 @@ export function useDb() {
     return db.settings.get(pubkey)
   }
 
-  return { addPurchase, getPurchases, deletePurchase, saveSettings, getSettings }
+  return { saveSettings, getSettings }
 }

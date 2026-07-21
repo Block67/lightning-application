@@ -8,28 +8,20 @@
       </RouterLink>
 
       <nav class="nav-links">
-        <RouterLink to="/fees">⚡ {{ t('nav.fees') }}</RouterLink>
         <RouterLink to="/game">🎮 {{ t('nav.game') }}</RouterLink>
         <RouterLink to="/blog">📝 {{ t('nav.blog') }}</RouterLink>
         <RouterLink to="/utxos"     v-if="auth.isAuthenticated">🔗 {{ t('nav.utxos') }}</RouterLink>
-        <RouterLink to="/stack"     v-if="auth.isAuthenticated">📈 {{ t('nav.stack') }}</RouterLink>
-        <RouterLink to="/dashboard" v-if="auth.isAuthenticated">🏠 {{ t('nav.dashboard') }}</RouterLink>
       </nav>
 
       <div class="nav-right">
         <TipButton />
-        <button class="lang-toggle" @click="toggleLang" :title="locale === 'fr' ? 'Switch to English' : 'Passer en Français'">
+        <button v-if="!auth.isAuthenticated" class="lang-toggle" @click="toggleLang" :title="locale === 'fr' ? 'Switch to English' : 'Passer en Français'">
           {{ locale === 'fr' ? '🇫🇷 FR' : '🇬🇧 EN' }}
         </button>
-        <template v-if="auth.isAuthenticated">
-          <span class="pubkey-tag">⚡ {{ auth.shortPubkey }}</span>
-          <button class="btn btn-ghost btn-sm" @click="handleLogout">{{ t('nav.disconnect') }}</button>
-        </template>
-        <template v-else>
-          <button class="btn btn-primary btn-sm" @click="showAuth = true">
-            ⚡ {{ t('nav.connect') }}
-          </button>
-        </template>
+        <ProfileMenu v-if="auth.isAuthenticated" />
+        <button v-else class="btn btn-primary btn-sm" @click="showAuth = true">
+          ⚡ {{ t('nav.connect') }}
+        </button>
       </div>
 
       <button class="hamburger" @click="mobileOpen = !mobileOpen" aria-label="Menu">
@@ -44,12 +36,9 @@
 
     <!-- Mobile nav -->
     <div class="mobile-nav" :class="{ open: mobileOpen }">
-      <RouterLink to="/fees"      @click="mobileOpen = false">⚡ {{ t('nav.fees') }}</RouterLink>
       <RouterLink to="/game"      @click="mobileOpen = false">🎮 {{ t('nav.game') }}</RouterLink>
       <RouterLink to="/blog"      @click="mobileOpen = false">📝 {{ t('nav.blog') }}</RouterLink>
       <RouterLink to="/utxos"     @click="mobileOpen = false" v-if="auth.isAuthenticated">🔗 {{ t('nav.utxos') }}</RouterLink>
-      <RouterLink to="/stack"     @click="mobileOpen = false" v-if="auth.isAuthenticated">📈 {{ t('nav.stack') }}</RouterLink>
-      <RouterLink to="/dashboard" @click="mobileOpen = false" v-if="auth.isAuthenticated">🏠 {{ t('nav.dashboard') }}</RouterLink>
       <div class="mobile-actions">
         <TipButton />
         <button class="lang-toggle" @click="toggleLang" style="width:100%; justify-content:center">
@@ -82,6 +71,7 @@ import { useI18n } from 'vue-i18n'
 import { useAuthStore } from '@/stores/auth'
 import LnAuthModal from '@/components/auth/LnAuthModal.vue'
 import TipButton from '@/components/TipButton.vue'
+import ProfileMenu from '@/components/ProfileMenu.vue'
 
 const { t, locale } = useI18n()
 const auth = useAuthStore()

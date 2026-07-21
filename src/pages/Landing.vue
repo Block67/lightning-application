@@ -6,13 +6,6 @@
       <h2 class="section-title">{{ t('landing.features_title') }}</h2>
 
       <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>{{ t('landing.feat1_title') }}</h3>
-          <p>{{ t('landing.feat1_desc') }}</p>
-          <RouterLink to="/fees" class="feature-link">{{ t('landing.feat1_cta') }}</RouterLink>
-        </div>
-
         <div class="feature-card feature-locked" @click="!auth.isAuthenticated && (showAuth = true)">
           <span v-if="!auth.isAuthenticated" class="lock-tag">{{ t('landing.lock_tag') }}</span>
           <div class="feature-icon">🔗</div>
@@ -21,12 +14,18 @@
           <RouterLink v-if="auth.isAuthenticated" to="/utxos" class="feature-link">{{ t('landing.feat2_cta') }}</RouterLink>
         </div>
 
-        <div class="feature-card feature-locked" @click="!auth.isAuthenticated && (showAuth = true)">
-          <span v-if="!auth.isAuthenticated" class="lock-tag">{{ t('landing.lock_tag') }}</span>
-          <div class="feature-icon">📈</div>
-          <h3>{{ t('landing.feat3_title') }}</h3>
-          <p>{{ t('landing.feat3_desc') }}</p>
-          <RouterLink v-if="auth.isAuthenticated" to="/stack" class="feature-link">{{ t('landing.feat3_cta') }}</RouterLink>
+        <div class="feature-card">
+          <div class="feature-icon">📝</div>
+          <h3>{{ t('landing.feat_blog_title') }}</h3>
+          <p>{{ t('landing.feat_blog_desc') }}</p>
+          <RouterLink to="/blog" class="feature-link">{{ t('landing.feat_blog_cta') }}</RouterLink>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <h3>{{ t('landing.feat_game_title') }}</h3>
+          <p>{{ t('landing.feat_game_desc') }}</p>
+          <RouterLink to="/game" class="feature-link">{{ t('landing.feat_game_cta') }}</RouterLink>
         </div>
       </div>
     </div>
@@ -67,8 +66,8 @@
         <button class="btn btn-primary btn-lg" @click="showAuth = true">
           {{ t('landing.cta_connect2') }}
         </button>
-        <RouterLink to="/fees" class="btn btn-lg cta-ghost">
-          {{ t('landing.cta_fees2') }}
+        <RouterLink to="/blog" class="btn btn-lg cta-ghost">
+          {{ t('landing.cta_blog2') }}
         </RouterLink>
       </div>
       <p class="cta-wallets">Phoenix · Breez · Zeus · Alby · Blink</p>

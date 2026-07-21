@@ -104,7 +104,7 @@ async function init() {
         clearInterval(pollInterval)
         emit('success')
         emit('close')
-        const redirect = route.query.redirect || '/dashboard'
+        const redirect = route.query.redirect || '/'
         router.push(redirect)
       }
     }, 2000)
@@ -153,7 +153,7 @@ async function loginWithWebln() {
       clearTimeout(expiryTimer)
       emit('success')
       emit('close')
-      const redirect = route.query.redirect || '/dashboard'
+      const redirect = route.query.redirect || '/'
       router.push(redirect)
     }
   } catch (e) {
