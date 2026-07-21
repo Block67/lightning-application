@@ -120,6 +120,17 @@ async function init() {
   }
 }
 
+function friendlyWeblnError(message) {
+  if (!message) return 'Connexion annulée ou refusée par le wallet.'
+  if (/signmessage.*not supported/i.test(message)) {
+    return 'Ce compte ne supporte pas la connexion en un clic (compte Alby hébergé). Utilise le QR code ci-dessous.'
+  }
+  if (/rejected|denied|cancelled/i.test(message)) {
+    return 'Connexion refusée dans le wallet.'
+  }
+  return message
+}
+
 async function loginWithWebln() {
   if (!challenge.value) return
   weblnError.value = null
@@ -129,7 +140,7 @@ async function loginWithWebln() {
     const result = await webln.login(challenge.value.k1)
     if (!result) {
       if (webln.error.value !== 'no-extension') {
-        weblnError.value = webln.error.value || 'Connexion annulée ou refusée par le wallet.'
+        weblnError.value = friendlyWeblnError(webln.error.value)
       }
       return
     }

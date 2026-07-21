@@ -238,9 +238,18 @@ Première version de ce login, on appelait `getInfo()` pour récupérer `info.no
 | Coût / maintenance | Élevé (infra à gérer) | Nul (juste une app) |
 | Popularité réelle | Minoritaire (power users) | Majoritaire (grand public) |
 
-**Pourquoi `signMessage()` marche quand même sur un compte custodial, lui ?** Parce que signer un message ne demande *aucune* information sur la topologie du node — juste une paire de clés valide. Le prestataire peut très bien signer en interne avec une clé propre à ton compte (même si ce n'est pas une identité de node publique), ou proxifier vers son vrai node en scopant la signature à toi. Dans les deux cas, la garantie cryptographique dont on a réellement besoin — *"seule la personne qui contrôle cette clé privée a pu produire cette signature"* — reste vraie.
+**En théorie, `signMessage()` devrait marcher quand même sur un compte custodial** : signer un message ne demande *aucune* information sur la topologie du node — juste une paire de clés valide, que le prestataire pourrait très bien gérer en interne pour ton compte. C'est pour ça qu'on a d'abord dérivé l'identité depuis la signature (recovery, voir section 6) plutôt que de dépendre de `getInfo()` : ça déplace l'exigence de "le wallet doit exposer un vrai node" vers "le wallet doit juste savoir signer un message" — nettement plus faible comme contrainte.
 
-**C'est pour ça qu'on dérive l'identité depuis la signature (recovery, voir section 6), plutôt que de dépendre de `getInfo()`** : ça déplace l'exigence de "le wallet doit exposer un vrai node avec des vraies infos" (peu fiable, optionnel dans les faits) vers "le wallet doit implémenter correctement `signMessage()`" (fonctionnalité cœur du spec WebLN, bien plus universellement supportée) — et ça marche aussi bien pour un utilisateur self-hosted que pour quelqu'un qui a juste installé Alby en 2 minutes sans jamais toucher à un node.
+**En pratique, ce n'est toujours pas garanti.** En testant ce projet avec un vrai compte Alby hébergé, l'extension a carrément refusé d'exécuter `signMessage()` :
+
+```
+Erreur: SignMessage is not supported by Alby accounts.
+Generate a Master Key to use LNURL auth.
+```
+
+Le message est éloquent : Alby indique explicitement que pour ce type de compte, il faut passer par... LNURL-auth (le flow QR classique de la section 4). Autrement dit, Alby n'implémente `signMessage()` que pour les comptes adossés à un vrai node — pour les comptes hébergés, seul le mécanisme LNURL-auth "linking key" (dérivation BIP32 spécifique au domaine, section 4.4) est disponible, pas la signature de message générique.
+
+**Conclusion honnête :** le login WebLN en un clic est une **amélioration d'expérience pour les utilisateurs équipés** (node self-hosted, ou wallet dont le backend supporte `signMessage()`), pas un remplacement universel. Le flow QR LNURL-auth reste **la seule méthode garantie de fonctionner avec n'importe quel wallet Lightning**, custodial ou non — c'est pour ça qu'il reste affiché par défaut, avec WebLN en simple raccourci optionnel au-dessus (voir [LnAuthModal.vue](src/components/auth/LnAuthModal.vue)). Un message d'erreur clair invite à utiliser le QR quand WebLN échoue, plutôt que de laisser l'utilisateur bloqué.
 
 ### 5.3 Ce qu'on a construit avec ça : le Tip Jar
 
