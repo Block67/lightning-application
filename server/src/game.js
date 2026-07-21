@@ -7,6 +7,7 @@ const path = require('path')
 const { DatabaseSync } = require('node:sqlite')
 
 const TEAMS = ['phoenix', 'zeus']
+const TEAM_LABELS = { phoenix: 'Phoenix', zeus: 'Zeus' }
 
 const db = new DatabaseSync(path.join(__dirname, '../data.sqlite'))
 
@@ -18,11 +19,23 @@ db.exec(`
   )
 `)
 
+// Même table que posts.js — déclarée ici aussi pour ne pas dépendre de
+// l'ordre de require() entre les deux modules.
+db.exec(`
+  CREATE TABLE IF NOT EXISTS posts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pubkey TEXT NOT NULL,
+    message TEXT NOT NULL,
+    created_at INTEGER NOT NULL
+  )
+`)
+
 const tallyStmt = db.prepare('SELECT team, COUNT(*) AS n FROM game_scores WHERE excluded = 0 GROUP BY team')
 const getStmt = db.prepare('SELECT team, excluded FROM game_scores WHERE pubkey = ?')
 const insertStmt = db.prepare('INSERT INTO game_scores (pubkey, team, excluded) VALUES (?, ?, 0)')
 const excludeStmt = db.prepare('UPDATE game_scores SET excluded = 1 WHERE pubkey = ?')
 const clearStmt = db.prepare('DELETE FROM game_scores')
+const publishAlertStmt = db.prepare('INSERT INTO posts (pubkey, message, created_at) VALUES (?, ?, ?)')
 
 function setupGame(app, requireAuth) {
   app.get('/game/leaderboard', (req, res) => {
@@ -52,8 +65,15 @@ function setupGame(app, requireAuth) {
 
     // Deuxième tentative pour la même pubkey = tentative de triche :
     // le point déjà marqué est retiré et la pubkey est exclue définitivement.
+    // Comme sur Bitcoin, la tentative échoue mais reste publique — publiée
+    // automatiquement sur le blog, sous la pubkey du fautif.
     excludeStmt.run(pubkey)
-    return res.status(403).json({ error: 'Tentative de triche détectée — ton point a été retiré et tu es exclu du jeu.' })
+    publishAlertStmt.run(
+      pubkey,
+      `🚨 Tentative d'attaque détectée : cette pubkey a essayé de marquer un 2e point pour Team ${TEAM_LABELS[existing.team] || existing.team}. Rejetée et exclue du jeu — comme sur Bitcoin, la tentative reste publique.`,
+      Date.now()
+    )
+    return res.status(403).json({ error: 'Tentative de triche détectée — ton point a été retiré, tu es exclu du jeu, et ça vient d\'être publié sur le blog.' })
   })
 
   // Remise à zéro entre deux sessions de classe — protégé par une clé
